@@ -201,3 +201,30 @@ test('ablation filtering and empty data have explicit states',async()=>{
   assert.equal(empty.get('copy-results').disabled,true);
   assert.equal(empty.get('empty-title').textContent,'No published results yet');
 });
+
+test('headline counts 72 main submissions, not the 212 additional trait ablations',async()=>{
+  const main=Array.from({length:72},(_,i)=>({...entries[1],submission_id:`main-${i}`,
+    experiment:{model_family:'encoder',scope:'main'}}));
+  const ablations=Array.from({length:212},(_,i)=>({...entries[1],submission_id:`ablation-${i}`,
+    ranking_group_id:'ablation',experiment:{model_family:'decoder',scope:'ablation',trait_subset:['Gender']}}));
+  const data={entries:[...main,...ablations],history:{},artifact_metadata:{},runs:{}};
+  const dom=await loadView(data);
+  assert.equal(dom.get('error').hidden,true);
+  assert.equal(String(dom.get('total-configurations').textContent),'72');
+  assert.match(dom.get('footer-summary').textContent,/72 main submissions · 212 trait ablations/u);
+  dom.get('scope-filter').value='ablation';dom.get('scope-filter').listeners.change();
+  assert.match(dom.get('results-summary').textContent,/Showing 212 of 284/u);
+  assert.equal(String(dom.get('total-configurations').textContent),'72');
+  dom.get('scope-filter').value='';dom.get('scope-filter').listeners.change();
+  assert.match(dom.get('results-summary').textContent,/Showing 284 of 284/u);
+});
+
+test('new measured submissions increase the main count; empty and ablation-only sites do not',async()=>{
+  const ablation={...entries[1],experiment:{model_family:'decoder',scope:'ablation'}};
+  const base={history:{},artifact_metadata:{},runs:{}};
+  for(const [published,expected] of [[[],0],[[ablation],0],[[ablation,entries[1]],1],[[ablation,...entries],2]]) {
+    const dom=await loadView({...base,entries:published});
+    assert.equal(dom.get('error').hidden,true);
+    assert.equal(String(dom.get('total-configurations').textContent),String(expected));
+  }
+});

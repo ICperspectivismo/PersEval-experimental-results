@@ -798,8 +798,10 @@ async function initialize() {
     state.groups = groups;
     state.groupByKey = new Map(groups.map(group => [group.key, group]));
     state.filters.families = new Set(["Encoder", "Decoder", "Unspecified"]);
-    elements.totalConfigurations.textContent = rows.length;
-    elements.footerSummary.textContent = `${rows.length} submissions · ${uniqueValues("dataset").length} datasets · ${uniqueValues("model").length} models`;
+    const mainCount = rows.filter(row => fieldValue(row.entry, "scope") === "main").length;
+    const ablationCount = rows.filter(row => fieldValue(row.entry, "scope") === "ablation").length;
+    elements.totalConfigurations.textContent = mainCount;
+    elements.footerSummary.textContent = `${mainCount} main submissions · ${ablationCount} trait ablations · ${uniqueValues("dataset").length} datasets · ${uniqueValues("model").length} models`;
     byId("family-unknown-label").hidden = !rows.some(row => row.model_family === "Unspecified");
     populateSelect(elements.datasetFilter, uniqueValues("dataset"));
     populateSelect(elements.modelFilter, uniqueValues("model"));
