@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/result-bundle/1.0/configuration.schema.json",
+  "type": "object",
+  "properties": {
+    "benchmark_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dataset": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 71,
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "maxLength": 71
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "revision",
+        "fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "split": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "test_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 71,
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "maxLength": 71
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "parameters",
+        "seed",
+        "test_fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "task": {
+      "enum": [
+        "baseline",
+        "named",
+        "unnamed"
+      ]
+    },
+    "adaptation": {
+      "enum": [
+        "none",
+        "train",
+        "test"
+      ]
+    },
+    "extended": {
+      "type": "boolean"
+    },
+    "method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "representation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hyperparameters": {
+      "type": "object",
+      "properties": {
+        "training": {
+          "$ref": "#/$defs/parameters"
+        },
+        "inference": {
+          "$ref": "#/$defs/parameters"
+        }
+      },
+      "required": [
+        "training",
+        "inference"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "benchmark_version",
+    "dataset",
+    "label",
+    "split",
+    "model",
+    "task",
+    "adaptation",
+    "extended",
+    "method",
+    "representation",
+    "hyperparameters"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "parameters": {
+      "type": "object",
+      "propertyNames": {
+        "not": {
+          "enum": [
+            "run_id",
+            "execution_seed",
+            "seed",
+            "random_state",
+            "data_seed",
+            "submitter",
+            "organization",
+            "started_at",
+            "finished_at",
+            "exported_at",
+            "timestamp",
+            "machine",
+            "hostname"
+          ]
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/value"
+      }
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        {
+          "$ref": "#/$defs/parameters"
+        }
+      ]
+    }
+  }
+}

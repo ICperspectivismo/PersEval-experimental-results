@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/history/1.0/inventory.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "minLength": 40,
+          "maxLength": 40
+        },
+        "tree": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "minLength": 40,
+          "maxLength": 40
+        },
+        "object_format": {
+          "const": "sha1"
+        }
+      },
+      "required": [
+        "repository",
+        "commit",
+        "tree",
+        "object_format"
+      ],
+      "additionalProperties": false
+    },
+    "selection": {
+      "const": "complete-committed-tree"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "original_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "git_object_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$",
+            "minLength": 40,
+            "maxLength": 40
+          },
+          "git_mode": {
+            "enum": [
+              "100644",
+              "100755"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "minLength": 71,
+            "maxLength": 71
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "artifact_category": {
+            "enum": [
+              "dataset",
+              "dataset-cache",
+              "retrieval-intermediate",
+              "ablation-predictions",
+              "normalized-predictions",
+              "raw-model-output",
+              "classification-report",
+              "analysis-notebook",
+              "analysis-code",
+              "qualitative-report",
+              "historical-configuration",
+              "historical-test",
+              "historical-ci",
+              "historical-code",
+              "historical-documentation",
+              "housekeeping",
+              "diagram"
+            ]
+          },
+          "associated_experiments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "association_basis": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recovery_status": {
+            "enum": [
+              "recovered-git-blob",
+              "lfs-pointer-only"
+            ]
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "original_path",
+          "path",
+          "git_object_id",
+          "git_mode",
+          "sha256",
+          "size_bytes",
+          "artifact_category",
+          "associated_experiments",
+          "association_basis",
+          "recovery_status",
+          "limitations"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 100000
+    }
+  },
+  "required": [
+    "schema_version",
+    "source",
+    "selection",
+    "entries"
+  ],
+  "additionalProperties": false
+}

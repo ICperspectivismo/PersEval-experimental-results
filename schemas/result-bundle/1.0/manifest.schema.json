@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/result-bundle/1.0/manifest.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "schema_digest": {
+      "type": "string",
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "maxLength": 71
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 40,
+      "pattern": "^run_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "maxLength": 40
+    },
+    "configuration_id": {
+      "type": "string",
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "maxLength": 71
+    },
+    "payload_digest": {
+      "type": "string",
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "maxLength": 71
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^artifacts/[A-Za-z0-9][A-Za-z0-9._/-]*$",
+            "maxLength": 100
+          },
+          "media_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path",
+          "media_type",
+          "description"
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "schema_digest",
+    "run_id",
+    "configuration_id",
+    "payload_digest",
+    "artifacts"
+  ],
+  "additionalProperties": false
+}

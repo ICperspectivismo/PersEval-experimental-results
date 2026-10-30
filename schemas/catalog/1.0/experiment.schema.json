@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/catalog/1.0/experiment.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^paper2025-[a-z0-9-]+$",
+      "maxLength": 160
+    },
+    "scope": {
+      "enum": [
+        "main",
+        "ablation"
+      ]
+    },
+    "paper_row_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "enum": [
+            "encoder",
+            "decoder"
+          ]
+        },
+        "identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "paper_identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "family",
+        "identifier",
+        "paper_identifier",
+        "revision",
+        "notes"
+      ],
+      "additionalProperties": false
+    },
+    "dataset": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fingerprint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "label",
+        "revision",
+        "fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "task": {
+      "enum": [
+        "baseline",
+        "named",
+        "unnamed"
+      ]
+    },
+    "adaptation": {
+      "enum": [
+        "none",
+        "train",
+        "test"
+      ]
+    },
+    "extended": {
+      "type": "boolean"
+    },
+    "method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "representation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trait_subset": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "split": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "seed_default": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "historical_test_fingerprint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "protocol",
+        "parameters",
+        "seed_default",
+        "historical_test_fingerprint",
+        "provenance"
+      ],
+      "additionalProperties": false
+    },
+    "hyperparameters": {
+      "type": "object",
+      "properties": {
+        "paper": {
+          "type": "object"
+        },
+        "historical_implementation": {
+          "type": "object"
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "paper",
+        "historical_implementation",
+        "provenance"
+      ],
+      "additionalProperties": false
+    },
+    "seed_policy": {
+      "type": "object",
+      "properties": {
+        "historical_execution_seed": {
+          "type": "null"
+        },
+        "historical_config_default": {
+          "type": "integer"
+        },
+        "new_execution_seeds": {
+          "const": "explicit-user-selection"
+        },
+        "aggregation": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "historical_execution_seed",
+        "historical_config_default",
+        "new_execution_seeds",
+        "aggregation"
+      ],
+      "additionalProperties": false
+    },
+    "optional_dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "reporting": {
+      "type": "object",
+      "properties": {
+        "wandb_required": {
+          "const": false
+        },
+        "recommended_trainer_report_to": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "wandb_required",
+        "recommended_trainer_report_to",
+        "notes"
+      ],
+      "additionalProperties": false
+    },
+    "expected_hardware": {
+      "type": "object",
+      "properties": {
+        "historical_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minimum_gpu_memory_gib": {
+          "type": "null"
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "historical_reference",
+        "minimum_gpu_memory_gib",
+        "notes"
+      ],
+      "additionalProperties": false
+    },
+    "historical_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relationship": {
+            "enum": [
+              "implementation-only",
+              "shared-data",
+              "filename-correspondence",
+              "supporting-analysis"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path",
+          "relationship",
+          "notes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "reported_submissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^sub_[0-9a-f-]{36}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "declarative-only"
+        },
+        "automatic_transfer": {
+          "const": false
+        },
+        "explicit_result_export_required": {
+          "const": true
+        }
+      },
+      "required": [
+        "kind",
+        "automatic_transfer",
+        "explicit_result_export_required"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "scope",
+    "paper_row_id",
+    "model",
+    "dataset",
+    "task",
+    "adaptation",
+    "extended",
+    "method",
+    "representation",
+    "trait_subset",
+    "split",
+    "hyperparameters",
+    "seed_policy",
+    "optional_dependencies",
+    "reporting",
+    "expected_hardware",
+    "historical_evidence",
+    "reported_submissions",
+    "limitations",
+    "execution"
+  ],
+  "additionalProperties": false
+}

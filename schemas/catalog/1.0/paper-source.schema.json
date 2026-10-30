@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/catalog/1.0/paper-source.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "paper_id": {
+      "const": "perseval-emnlp-2025"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "citation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "local_reference_filename": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pdf_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "pdf_pages": {
+      "const": 26
+    },
+    "tables_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "transcribed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "transcription": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "main_tables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "ablation_tables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "non_f1_analysis": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "main_tables",
+        "ablation_tables",
+        "non_f1_analysis"
+      ],
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "scholarship_reference": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "minLength": 71,
+          "maxLength": 71
+        },
+        "pdf_page": {
+          "const": 4
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "interpretation": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "filename",
+        "sha256",
+        "pdf_page",
+        "section",
+        "interpretation"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "paper_id",
+    "title",
+    "citation",
+    "url",
+    "local_reference_filename",
+    "pdf_sha256",
+    "pdf_pages",
+    "tables_sha256",
+    "transcribed_at",
+    "transcription",
+    "scope",
+    "notes",
+    "scholarship_reference"
+  ],
+  "additionalProperties": false
+}

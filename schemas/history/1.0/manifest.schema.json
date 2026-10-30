@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/history/1.0/manifest.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$",
+      "minLength": 40,
+      "maxLength": 40
+    },
+    "inventory_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "file_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "total_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "categories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "legacy_measured_runs_created": {
+      "const": 0
+    },
+    "lfs_threshold_bytes": {
+      "const": 10485760
+    },
+    "source_commit_object_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_commit",
+    "inventory_sha256",
+    "file_count",
+    "total_bytes",
+    "categories",
+    "legacy_measured_runs_created",
+    "lfs_threshold_bytes",
+    "source_commit_object_sha256"
+  ],
+  "additionalProperties": false
+}

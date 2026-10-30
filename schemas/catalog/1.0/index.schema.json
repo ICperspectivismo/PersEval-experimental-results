@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/catalog/1.0/index.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "scope": {
+      "const": "scholarship-task-2.1"
+    },
+    "experiments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^paper2025-[a-z0-9-]+$",
+        "maxLength": 160
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "paper_source": {
+      "const": "papers/perseval-2025/source.json"
+    },
+    "paper_tables": {
+      "const": "papers/perseval-2025/tables.json"
+    },
+    "historical_inventory": {
+      "const": "historical/perseval-97cf3ae/inventory.json"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scope",
+    "experiments",
+    "paper_source",
+    "paper_tables",
+    "historical_inventory"
+  ],
+  "additionalProperties": false
+}

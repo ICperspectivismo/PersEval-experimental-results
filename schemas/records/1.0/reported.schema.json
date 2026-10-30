@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/records/1.0/reported.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "submission_id": {
+      "type": "string",
+      "minLength": 40,
+      "pattern": "^sub_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "maxLength": 40
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_revision_digest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "maxLength": 71
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "published",
+        "superseded",
+        "withdrawn"
+      ]
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 40,
+          "pattern": "^sub_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "maxLength": 40
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "submitter": {
+      "type": "string",
+      "minLength": 1
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "citation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "published_at": {
+      "type": "string",
+      "minLength": 1,
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "source",
+        "limitations"
+      ],
+      "additionalProperties": false
+    },
+    "source_type": {
+      "const": "reported"
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "group": {
+      "type": "object",
+      "properties": {
+        "benchmark_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task": {
+          "enum": [
+            "baseline",
+            "named",
+            "unnamed"
+          ]
+        },
+        "adaptation": {
+          "enum": [
+            "none",
+            "train",
+            "test"
+          ]
+        },
+        "extended": {
+          "type": "boolean"
+        },
+        "split_protocol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scoring_rule": {
+          "enum": [
+            "perseval.macro-f1.v1",
+            "perseval.positive-class-f1.v1"
+          ]
+        }
+      },
+      "required": [
+        "benchmark_version",
+        "dataset",
+        "label",
+        "task",
+        "adaptation",
+        "extended",
+        "split_protocol",
+        "scoring_rule"
+      ],
+      "additionalProperties": false
+    },
+    "paper_variant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mapping_evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "table": {
+          "type": "string",
+          "minLength": 1
+        },
+        "page": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "mapping_evidence",
+        "table",
+        "page"
+      ],
+      "additionalProperties": false
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "global_f1": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "user_f1": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text_f1": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "global_f1",
+        "user_f1",
+        "text_f1"
+      ],
+      "additionalProperties": false
+    },
+    "experiment": {
+      "type": "object",
+      "properties": {
+        "catalog_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_family": {
+          "enum": [
+            "encoder",
+            "decoder"
+          ]
+        },
+        "model_identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_revision": {
+          "type": "null"
+        },
+        "method": {
+          "enum": [
+            "focal-loss",
+            "base-zero",
+            "perspective",
+            "ipa"
+          ]
+        },
+        "representation": {
+          "enum": [
+            "text-only",
+            "user-id",
+            "user-id-and-traits",
+            "trait-prompts",
+            "user-history",
+            "user-history-and-traits"
+          ]
+        },
+        "trait_f1": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "rounding": {
+          "type": "object",
+          "properties": {
+            "decimal_places": {
+              "const": 3
+            },
+            "scale": {
+              "const": "0-1"
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "decimal_places",
+            "scale",
+            "notes"
+          ],
+          "additionalProperties": false
+        },
+        "source_document": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "minLength": 71,
+              "maxLength": 71
+            },
+            "pdf_page": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "printed_page": {
+              "type": "string",
+              "minLength": 1
+            },
+            "table": {
+              "type": "string",
+              "minLength": 1
+            },
+            "row": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "sha256",
+            "pdf_page",
+            "printed_page",
+            "table",
+            "row"
+          ],
+          "additionalProperties": false
+        },
+        "scope": {
+          "enum": [
+            "main",
+            "ablation"
+          ]
+        },
+        "trait_subset": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "additional_reported_metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "positive_class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "catalog_id",
+        "model_family",
+        "model_identifier",
+        "model_revision",
+        "method",
+        "representation",
+        "trait_f1",
+        "rounding",
+        "source_document",
+        "scope",
+        "trait_subset",
+        "additional_reported_metrics",
+        "positive_class"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "submission_id",
+    "revision",
+    "previous_revision_digest",
+    "status",
+    "superseded_by",
+    "name",
+    "submitter",
+    "notes",
+    "citation",
+    "published_at",
+    "provenance",
+    "source_type",
+    "model",
+    "group",
+    "paper_variant",
+    "values"
+  ],
+  "additionalProperties": false
+}

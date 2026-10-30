@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/catalog/1.0/paper-tables.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "paper_id": {
+      "const": "perseval-emnlp-2025"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "row_id": {
+            "type": "string",
+            "pattern": "^t[0-9]+-r[0-9]{3}$"
+          },
+          "table": {
+            "enum": [
+              "3",
+              "4",
+              "5",
+              "6",
+              "10",
+              "11",
+              "12",
+              "13"
+            ]
+          },
+          "pdf_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 26
+          },
+          "printed_page": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "enum": [
+              "main",
+              "ablation"
+            ]
+          },
+          "model_key": {
+            "enum": [
+              "roberta",
+              "llama",
+              "mixtral"
+            ]
+          },
+          "dataset": {
+            "enum": [
+              "EPIC",
+              "BREXIT",
+              "MHS",
+              "MD",
+              "DICES"
+            ]
+          },
+          "task": {
+            "enum": [
+              "baseline",
+              "named",
+              "unnamed"
+            ]
+          },
+          "adaptation": {
+            "enum": [
+              "none",
+              "train",
+              "test"
+            ]
+          },
+          "extended": {
+            "type": "boolean"
+          },
+          "method": {
+            "enum": [
+              "focal-loss",
+              "base-zero",
+              "perspective",
+              "ipa"
+            ]
+          },
+          "representation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trait_subset": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "scoring_rule": {
+            "enum": [
+              "perseval.macro-f1.v1",
+              "perseval.positive-class-f1.v1"
+            ]
+          },
+          "compact": {
+            "type": "object",
+            "properties": {
+              "global_f1": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "user_f1": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "text_f1": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "global_f1",
+              "user_f1",
+              "text_f1"
+            ],
+            "additionalProperties": false
+          },
+          "trait_f1": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "additional_metrics": {
+            "type": "object",
+            "properties": {
+              "precision": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "recall": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "printed_numeric_cells": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^\\.[0-9]{3}$"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "value",
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 3
+          }
+        },
+        "required": [
+          "row_id",
+          "table",
+          "pdf_page",
+          "printed_page",
+          "scope",
+          "model_key",
+          "dataset",
+          "task",
+          "adaptation",
+          "extended",
+          "method",
+          "representation",
+          "trait_subset",
+          "scoring_rule",
+          "compact",
+          "trait_f1",
+          "additional_metrics",
+          "printed_numeric_cells"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 1000
+    }
+  },
+  "required": [
+    "schema_version",
+    "paper_id",
+    "rows"
+  ],
+  "additionalProperties": false
+}

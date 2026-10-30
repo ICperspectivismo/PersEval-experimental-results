@@ -1,0 +1,1 @@
+{"compact":{"global_f1":0.75,"text_f1":0.5,"user_f1":0.5},"prediction_count":2,"schema_version":"1.0","scoring_rule":"perseval.macro-f1.v1"}

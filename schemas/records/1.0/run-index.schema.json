@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/records/1.0/run-index.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$",
+      "minLength": 40,
+      "maxLength": 40
+    },
+    "configuration_id": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "payload_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "scientific_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^runs/run_",
+      "maxLength": 45
+    },
+    "payload_bytes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "artifact_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "predictions_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sha256",
+          "size"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "configuration_id",
+    "payload_digest",
+    "scientific_digest",
+    "path",
+    "payload_bytes",
+    "artifact_bytes",
+    "predictions_digest"
+  ],
+  "additionalProperties": false
+}

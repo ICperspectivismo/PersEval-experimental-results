@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/site/1.0/public-artifacts.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[a-f0-9-]{36}$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^artifacts/"
+          },
+          "license": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attribution": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redistribution_permitted": {
+            "const": true
+          }
+        },
+        "required": [
+          "run_id",
+          "path",
+          "license",
+          "attribution",
+          "redistribution_permitted"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifacts"
+  ],
+  "additionalProperties": false
+}

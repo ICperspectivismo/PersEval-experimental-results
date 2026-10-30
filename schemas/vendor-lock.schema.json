@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/vendor-lock.schema.json",
+  "title": "PersEval's locally vendored result-contract lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_repository",
+    "source_revision",
+    "schema_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "source_repository": {
+      "const": "PersEval-paper-reproduction"
+    },
+    "source_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$",
+      "minLength": 40,
+      "maxLength": 40
+    },
+    "schema_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    }
+  }
+}

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'">
+    <meta
+      name="description"
+      content="Interactive PersEval leaderboard for comparing perspective-aware classification models within equivalent benchmark variants."
+    >
+    <title>PersEval Leaderboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to results</a>
+    <div class="page-glow page-glow--violet" aria-hidden="true"></div>
+    <div class="page-glow page-glow--green" aria-hidden="true"></div>
+
+    <main class="shell" id="main">
+      <nav class="topbar" aria-label="Leaderboard navigation">
+        <a class="brand" href="https://github.com/valeriobasile/PersEval">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span>PersEval</span>
+        </a>
+      </nav>
+
+      <header class="hero">
+        <div class="hero-copy">
+          <h1>Perspective-aware classification</h1>
+          <p class="hero-description">
+            Explore paper results and independent reproductions across PersEval tasks, with documented evidence for every score.
+          </p>
+        </div>
+
+        <div class="hero-stat" aria-label="Published submission count">
+          <span class="hero-stat__value" id="total-configurations">—</span>
+          <span class="hero-stat__label">published<br>submissions</span>
+        </div>
+      </header>
+
+      <section class="leaderboard" aria-labelledby="leaderboard-title">
+        <h2 class="sr-only" id="leaderboard-title">PersEval leaderboard</h2>
+        <div class="leaderboard-heading">
+          <div class="leaderboard-actions">
+            <button class="action-button action-button--secondary" id="copy-results" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+              </svg>
+              Copy filtered CSV
+            </button>
+            <a class="action-button action-button--primary" href="scores.csv" download>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"></path>
+              </svg>
+              Download full CSV
+            </a>
+          </div>
+        </div>
+
+        <div class="filters" aria-label="Leaderboard filters">
+          <label class="filter-control">
+            <span>Dataset</span>
+            <select id="dataset-filter">
+              <option value="">All datasets</option>
+            </select>
+          </label>
+
+          <fieldset class="filter-control filter-control--extended">
+            <legend>Extended training</legend>
+            <div class="segmented-control" id="extended-filter">
+              <button type="button" data-value="all" aria-pressed="true">Both</button>
+              <button type="button" data-value="false" aria-pressed="false">No</button>
+              <button type="button" data-value="true" aria-pressed="false">Yes</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-control filter-control--adaptation">
+            <legend>Adaptation</legend>
+            <div class="segmented-control" id="adaptation-filter">
+              <button type="button" data-value="all" aria-pressed="true">All</button>
+              <button type="button" data-value="none" aria-pressed="false">None</button>
+              <button type="button" data-value="train" aria-pressed="false">Training</button>
+              <button type="button" data-value="test" aria-pressed="false">Inference</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-control filter-control--family">
+            <legend>Model type</legend>
+            <div class="family-filters">
+              <label class="family-choice family-choice--encoder">
+                <input type="checkbox" id="family-encoder" value="Encoder" checked>
+                <span aria-hidden="true"></span> Encoder
+              </label>
+              <label class="family-choice family-choice--decoder">
+                <input type="checkbox" id="family-decoder" value="Decoder" checked>
+                <span aria-hidden="true"></span> Decoder
+              </label>
+              <label class="family-choice" id="family-unknown-label" hidden>
+                <input type="checkbox" id="family-unknown" value="Unspecified" checked>
+                <span aria-hidden="true"></span> Other / unspecified
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="filter-control">
+            <span>Model</span>
+            <select id="model-filter">
+              <option value="">All models</option>
+            </select>
+          </label>
+
+          <label class="filter-control filter-control--search">
+            <span>Search</span>
+            <span class="search-field">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
+              </svg>
+              <input id="search-filter" type="search" placeholder="Model, method, submission, or submitter">
+            </span>
+          </label>
+
+          <button class="reset-button" id="reset-filters" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4v6h6M20 20v-6h-6M5.1 15a8 8 0 0 0 13.2 2M18.9 9A8 8 0 0 0 5.7 7"></path>
+            </svg>
+            Reset
+          </button>
+        </div>
+
+        <details class="advanced-filters">
+          <summary>More filters</summary>
+          <div class="advanced-filter-grid">
+            <label class="filter-control"><span>Label</span><select id="label-filter"><option value="">All labels</option></select></label>
+            <label class="filter-control"><span>Task</span><select id="task-filter"><option value="">All tasks</option></select></label>
+            <label class="filter-control"><span>Evidence</span><select id="source-filter"><option value="">All evidence</option><option value="reported">Reported paper</option><option value="measured">Measured reproduction</option></select></label>
+            <label class="filter-control"><span>Experiments</span><select id="scope-filter"><option value="main">Main results and reproductions</option><option value="ablation">Paper trait ablations</option><option value="">All experiments</option></select></label>
+            <label class="filter-control advanced-filter--group"><span>Comparison group</span><select id="group-filter"><option value="">All comparison groups</option></select></label>
+          </div>
+        </details>
+
+        <div class="results-bar">
+          <p id="results-summary" role="status" aria-live="polite">Loading results…</p>
+          <div class="results-tools">
+            <div class="view-control" aria-label="Leaderboard view">
+              <span class="view-control__label">View</span>
+              <div class="segmented-control segmented-control--compact" id="view-mode">
+                <button type="button" data-value="grouped" aria-pressed="true">Grouped</button>
+                <button type="button" data-value="together" aria-pressed="false">All together</button>
+              </div>
+            </div>
+            <div class="score-legend" aria-label="Score heat map legend: relative within each variant">
+              <span>Lower</span>
+              <span class="score-legend__gradient" aria-hidden="true"></span>
+              <span>Higher</span>
+              <span class="score-legend__context">within each variant</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="error" class="load-error" role="alert" hidden>
+          <h3>Results could not be loaded</h3>
+          <p id="error-message"></p>
+          <button class="action-button action-button--secondary" id="retry" type="button">Try again</button>
+        </div>
+
+        <div class="table-frame">
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable leaderboard results">
+            <table id="leaderboard-table">
+              <caption class="sr-only">
+                PersEval results grouped by equivalent dataset, label, task, adaptation,
+                and extended-training configurations. Use the column buttons to sort
+                results inside every group.
+              </caption>
+              <thead>
+                <tr class="column-groups">
+                  <th rowspan="2" scope="col">
+                    <button class="sort-button" data-sort="rank" type="button">
+                      Rank <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th colspan="2" scope="colgroup">Identity</th>
+                  <th colspan="2" scope="colgroup">Configuration</th>
+                  <th colspan="3" scope="colgroup">Performance</th>
+                  <th rowspan="2" scope="col">Evidence</th>
+                </tr>
+                <tr class="column-labels">
+                  <th scope="col">Type</th>
+                  <th scope="col">Model</th>
+                  <th scope="col">Method</th>
+                  <th scope="col">Representation</th>
+                  <th scope="col">
+                    <button class="sort-button" data-sort="global_f1" type="button">
+                      Global F1 <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-button" data-sort="user_f1" type="button">
+                      User F1 <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-button" data-sort="text_f1" type="button">
+                      Text F1 <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body"></tbody>
+            </table>
+
+            <table id="together-leaderboard-table" class="together-table" hidden>
+              <caption class="sr-only">
+                All PersEval configurations in one table. Rank and heat colors retain
+                their meaning within each equivalent benchmark variant.
+              </caption>
+              <thead>
+                <tr class="column-groups">
+                  <th rowspan="2" scope="col">
+                    <button class="sort-button" data-sort="rank" type="button">
+                      Rank <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th colspan="4" scope="colgroup">Identity</th>
+                  <th colspan="5" scope="colgroup">Configuration</th>
+                  <th colspan="3" scope="colgroup">Performance</th>
+                  <th rowspan="2" scope="col">Evidence</th>
+                </tr>
+                <tr class="column-labels">
+                  <th scope="col">Dataset</th>
+                  <th scope="col">Label</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Model</th>
+                  <th scope="col">Task</th>
+                  <th scope="col">Adaptation</th>
+                  <th scope="col">Extended</th>
+                  <th scope="col">Method</th>
+                  <th scope="col">Representation</th>
+                  <th scope="col">
+                    <button class="sort-button" data-sort="global_f1" type="button">
+                      Global F1 <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-button" data-sort="user_f1" type="button">
+                      User F1 <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-button" data-sort="text_f1" type="button">
+                      Text F1 <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="together-leaderboard-body"></tbody>
+            </table>
+
+            <div class="empty-state" id="empty-state" hidden>
+              <div aria-hidden="true">⌁</div>
+              <h3 id="empty-title">No matching submissions</h3>
+              <p id="empty-description">Try broadening the dataset, model, or search filters.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-notes">
+          <div>
+            <h3>Compare within groups</h3>
+            <p>Ranks and heat colors belong to the complete comparison group. Paper values
+              and measured runs have separate rankings. Scores use the 0–1 scale;
+              unavailable values are shown as a dash.</p>
+          </div>
+          <a href="https://aclanthology.org/2025.emnlp-main.1137.pdf#page=1">
+            Read the PersEval paper <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <details class="history">
+        <summary>Submission revision history</summary>
+        <p>Previous revisions, withdrawn entries, and superseded entries remain available below.</p>
+        <div id="history"></div>
+      </details>
+
+      <dialog class="submission-dialog" id="submission-dialog" aria-labelledby="submission-title">
+        <div class="submission-dialog-heading">
+          <h2 id="submission-title">Submission details</h2>
+          <button class="action-button action-button--secondary" id="close-details" type="button">Close</button>
+        </div>
+        <div id="submission-content"></div>
+      </dialog>
+
+      <footer>
+        <span>PersEval</span>
+        <span id="footer-summary">Published benchmark results</span>
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <noscript>
+      <p class="noscript-message">
+        JavaScript is required for filtering and sorting. The complete data remains
+        available in <a href="scores.csv">scores.csv</a>.
+      </p>
+    </noscript>
+  </body>
+</html>

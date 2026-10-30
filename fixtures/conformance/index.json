@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "synthetic": true,
+  "valid_bundles": [
+    "valid/minimal.perseval-result.tar.gz",
+    "valid/selected-artifact.perseval-result.tar.gz",
+    "valid/limited-provenance.perseval-result.tar.gz"
+  ],
+  "invalid_bundles": [
+    {
+      "file": "invalid/missing-environment.perseval-result.tar.gz",
+      "expected_error": "missing required files"
+    },
+    {
+      "file": "invalid/checksum-mismatch.perseval-result.tar.gz",
+      "expected_error": "checksums"
+    },
+    {
+      "file": "invalid/extra-prediction-column.perseval-result.tar.gz",
+      "expected_error": "prediction columns"
+    },
+    {
+      "file": "invalid/duplicate-pair.perseval-result.tar.gz",
+      "expected_error": "unique and sorted"
+    },
+    {
+      "file": "invalid/wrong-count.perseval-result.tar.gz",
+      "expected_error": "prediction count"
+    },
+    {
+      "file": "invalid/out-of-range-metric.perseval-result.tar.gz",
+      "expected_error": "metrics"
+    },
+    {
+      "file": "invalid/configuration-mismatch.perseval-result.tar.gz",
+      "expected_error": "configuration_id"
+    },
+    {
+      "file": "invalid/execution-seed-in-configuration.perseval-result.tar.gz",
+      "expected_error": "run"
+    },
+    {
+      "file": "invalid/unknown-scoring-rule.perseval-result.tar.gz",
+      "expected_error": "metrics"
+    },
+    {
+      "file": "invalid/unselected-artifact.perseval-result.tar.gz",
+      "expected_error": "explicitly declared"
+    },
+    {
+      "file": "invalid/unknown-schema-digest.perseval-result.tar.gz",
+      "expected_error": "schema digest"
+    },
+    {
+      "file": "invalid/payload-digest-mismatch.perseval-result.tar.gz",
+      "expected_error": "payload digest"
+    },
+    {
+      "file": "invalid/path-traversal.perseval-result.tar.gz",
+      "expected_error": "path"
+    },
+    {
+      "file": "invalid/absolute-path.perseval-result.tar.gz",
+      "expected_error": "path"
+    },
+    {
+      "file": "invalid/symlink.perseval-result.tar.gz",
+      "expected_error": "regular"
+    },
+    {
+      "file": "invalid/duplicate-member.perseval-result.tar.gz",
+      "expected_error": "duplicate"
+    }
+  ],
+  "valid_reported_records": [
+    "valid/reported.json"
+  ]
+}

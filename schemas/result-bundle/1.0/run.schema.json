@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/result-bundle/1.0/run.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 40,
+      "pattern": "^run_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "maxLength": 40
+    },
+    "configuration_id": {
+      "type": "string",
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "maxLength": 71
+    },
+    "configuration": {
+      "$ref": "configuration.schema.json"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "started_at": {
+          "type": "string",
+          "minLength": 1,
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": "string",
+          "minLength": 1,
+          "format": "date-time"
+        },
+        "command": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "executor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "started_at",
+        "finished_at",
+        "command",
+        "executor"
+      ],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "perseval_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "perseval_git_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 40,
+              "pattern": "^[0-9a-f]{40}$",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "perseval_git_dirty": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label_mapping": {
+          "anyOf": [
+            {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "split_provenance": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "perseval_version",
+        "perseval_git_revision",
+        "perseval_git_dirty",
+        "label_mapping",
+        "split_provenance",
+        "notes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "configuration_id",
+    "configuration",
+    "seed",
+    "execution",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

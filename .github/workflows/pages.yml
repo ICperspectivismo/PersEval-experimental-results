@@ -1,0 +1,62 @@
+name: Validate results and deploy Pages
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+# PRs and other branches cannot cancel an in-flight publication deployment.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    # Set repository variable PUBLICATION_BRANCH to override the default main.
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.ref_name == (vars.PUBLICATION_BRANCH || 'main')
+    runs-on: ubuntu-latest
+    env:
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install lightweight build package
+        run: python -m pip install .
+      - name: Offline tests (synthetic fixtures; no payload downloads)
+        run: python -m unittest discover -s tests -v
+      - name: Validate authoritative records and append-only Git history
+        run: perseval-results validate --history --metadata-only
+      - name: Build leaderboard from this source revision
+        env:
+          SOURCE_REVISION: ${{ github.sha }}
+        run: perseval-results site build --output site-build/ --source-revision "$SOURCE_REVISION"
+      - name: Validate generated leaderboard, ranks and internal links
+        run: perseval-results site check --output site-build/
+      - name: Upload Pages artifact only for the publication branch
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-build
+  deploy:
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref_name == (vars.PUBLICATION_BRANCH || 'main')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the validated static artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

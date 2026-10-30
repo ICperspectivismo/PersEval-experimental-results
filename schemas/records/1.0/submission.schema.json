@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/records/1.0/submission.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "submission_id": {
+      "type": "string",
+      "minLength": 40,
+      "pattern": "^sub_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "maxLength": 40
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_revision_digest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "maxLength": 71
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "published",
+        "superseded",
+        "withdrawn"
+      ]
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 40,
+          "pattern": "^sub_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "maxLength": 40
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "submitter": {
+      "type": "string",
+      "minLength": 1
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "citation": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "published_at": {
+      "type": "string",
+      "minLength": 1,
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "source",
+        "limitations"
+      ],
+      "additionalProperties": false
+    },
+    "source_type": {
+      "const": "measured"
+    },
+    "configuration_id": {
+      "type": "string",
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "maxLength": 71
+    },
+    "scoring_rule": {
+      "const": "perseval.macro-f1.v1"
+    },
+    "run_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 40,
+        "pattern": "^run_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+        "maxLength": 40
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "submission_id",
+    "revision",
+    "previous_revision_digest",
+    "status",
+    "superseded_by",
+    "name",
+    "submitter",
+    "notes",
+    "citation",
+    "published_at",
+    "provenance",
+    "source_type",
+    "configuration_id",
+    "scoring_rule",
+    "run_ids"
+  ],
+  "additionalProperties": false
+}

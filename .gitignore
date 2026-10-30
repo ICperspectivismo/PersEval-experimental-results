@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+preview/
+.perseval-results.lock
+
+.perseval-preview-*/
+
+site-build/
+.perseval-site-*/

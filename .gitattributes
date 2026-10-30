@@ -1,0 +1,41 @@
+# Score/provenance metadata must remain readable without downloading LFS objects.
+*.json -filter
+*.py -filter
+*.md -filter
+registry/** -filter -text
+schemas/** -filter -text
+docs/** -filter
+src/** -filter
+runs/*/checksums.sha256 -filter
+runs/** -text
+# publish-bundle appends exact LFS rules for prediction/artifact files >= 10 MiB.
+
+/historical/** -text -filter
+/catalog/** -text -filter
+/papers/** -text -filter
+# Recovered historical evidence; exact large payload paths only.
+/historical/perseval-97cf3ae/snapshot/data/MD-Agreement_dataset/MD_agreement.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350/data-00000-of-00001.arrow filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350_enhanced/cache-168eb8cf6ff5bd40.arrow filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350_enhanced/cache-65755c5ce7156fe0.arrow filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350_enhanced/cache-c7d1e070d45d19d5.arrow filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350_enhanced/cache-f21c37c578b97e9e.arrow filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data/diverse_safety_adversarial_dialog_350_enhanced/data-00000-of-00001.arrow filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data_LaMP/Epic_Gender_input.json filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data_LaMP/Epic_Generation_input.json filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data_LaMP/Epic_Nationality_input.json filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/data_LaMP/Epic_input.json filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_llama/predictions_MHS_False_train_False_zero.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_llama/predictions_MHS_True_train_False_Age.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_llama/predictions_MHS_True_train_False_Education.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_llama/predictions_MHS_True_train_False_Gender.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_llama/predictions_MHS_True_train_False_Ideology.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_llama/predictions_MHS_True_train_False_Income.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MD_False_train_False_zero.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MHS_False_train_False_zero.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MHS_True_train_False_Age.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MHS_True_train_False_Education.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MHS_True_train_False_Gender.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MHS_True_train_False_Ideology.csv filter=lfs diff=lfs merge=lfs -text
+/historical/perseval-97cf3ae/snapshot/predictions_mixtral/predictions_MHS_True_train_False_Income.csv filter=lfs diff=lfs merge=lfs -text

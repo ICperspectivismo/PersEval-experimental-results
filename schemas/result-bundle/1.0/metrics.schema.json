@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/result-bundle/1.0/metrics.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "scoring_rule": {
+      "const": "perseval.macro-f1.v1"
+    },
+    "prediction_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "compact": {
+      "type": "object",
+      "properties": {
+        "global_f1": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "user_f1": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text_f1": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "global_f1",
+        "user_f1",
+        "text_f1"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "scoring_rule",
+    "prediction_count",
+    "compact"
+  ],
+  "additionalProperties": false
+}

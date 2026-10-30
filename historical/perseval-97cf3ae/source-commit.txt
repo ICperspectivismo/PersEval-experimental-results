@@ -1,0 +1,26 @@
+tree e3d9dbc4968ab13fb032813b7110f7f061cbecbc
+parent 84b73ab900ce645c852116cd395791d813299cbe
+parent cc8576eab54d15d4420b38e74fbcf4599f4473d7
+author Leônidas Braga <65327304+lebraga1@users.noreply.github.com> 1792088866 -0300
+committer GitHub <noreply@github.com> 1792088866 -0300
+gpgsig -----BEGIN PGP SIGNATURE-----
+ 
+ wsFcBAABCAAQBQJq0RsiCRC1aQ7uu5UhlAAAGFwQAJK9s9LjySWn8Hq6O3Giv3Ug
+ y+eHH689IQT73XFOj5Oxn3clQ6mXwCHNCfop6k2/en8vM4NR9Xpl6IsIfWHTyQ7G
+ Zom4TG9JuuggoegSJlGZ2Glju+ruGaf65rmtpHFt9yGetwdaJo5peUMytnj6XGBN
+ 601U1RT7P6qIb5ZGF7CF2oiJc/0G+Z07HznkYLinDvyndy7qJQs1eN2/ghHxrKCn
+ Pos0u2W3dfI/esTT5iC+b8qc8rYjBSNpKWpgxlvlCAAXjTNWDJMcgvvzJyIYZ3KX
+ I4iXAhmMcxX1NnYwpWqbTWd3buJ6+SAjL9vCmASfFHZm2mjM0AO1GIQgW6iLAIYz
+ 2Qiu/7Xns75DkbWgltitpke7UthWsDK7ga7wT+xBtK+8vGo1DK5FFi9f2otNv9qb
+ ni1yf5kIlwoVHQLWa117thy+7A6jnmhQjCsUfGXosoGsJ7DrIF90HWOLjALcxhjC
+ GnUKUqej9kE30qb5CyEXXiWJJl1UBPB1Jjr09aocxB+OpI61FwEjmS96RK2uLoMa
+ FMX2A7xyLwIlPoLIxowe5JUr+quBtAvxVv8E2od3InvOoz474Z70ZcBCbuuEcI2q
+ WWTUq7xRSE57ALngYkGEUlBUXdd+KR4OZ80HG1z7/6EXp3xBR0dqvCaTV9rtR0qE
+ Nas1RcYa8ry7MXeXwh4w
+ =+YMk
+ -----END PGP SIGNATURE-----
+ 
+
+Merge pull request #13 from lebraga1/datasets-statistics
+
+Datasets statistics

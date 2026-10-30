@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://perseval.org/schemas/records/1.0/current.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "submission_id": {
+      "type": "string",
+      "pattern": "^sub_[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$",
+      "minLength": 40,
+      "maxLength": 40
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "revision_path": {
+      "type": "string",
+      "pattern": "^registry/submissions/sub_",
+      "maxLength": 128
+    },
+    "revision_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    }
+  },
+  "required": [
+    "schema_version",
+    "submission_id",
+    "revision",
+    "revision_path",
+    "revision_digest"
+  ],
+  "additionalProperties": false
+}

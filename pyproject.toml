@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "perseval-results"
+version = "0.1.0"
+description = "Offline PersEval result contract and static leaderboard publisher"
+requires-python = ">=3.11"
+dependencies = ["jsonschema>=4.18,<5"]
+
+[project.scripts]
+perseval-results = "perseval_results.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
