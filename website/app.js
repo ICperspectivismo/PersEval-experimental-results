@@ -239,7 +239,6 @@ const state = {
     families: new Set(["Encoder", "Decoder"]),
     model: "",
     query: "",
-    label: "", task: "", source: "", scope: "main", group: "",
   },
   sort: {
     key: "rank",
@@ -249,11 +248,6 @@ const state = {
 
 const elements = {
   body: document.querySelector("#leaderboard-body"),
-  labelFilter: document.querySelector("#label-filter"),
-  taskFilter: document.querySelector("#task-filter"),
-  sourceFilter: document.querySelector("#source-filter"),
-  scopeFilter: document.querySelector("#scope-filter"),
-  groupFilter: document.querySelector("#group-filter"),
   table: document.querySelector("#leaderboard-table"),
   togetherBody: document.querySelector("#together-leaderboard-body"),
   togetherTable: document.querySelector("#together-leaderboard-table"),
@@ -300,10 +294,7 @@ function populateSelect(select, values) {
 function groupMatchesFilters(group) {
   return (!state.filters.dataset || group.dataset === state.filters.dataset)
     && (state.filters.extended === "all" || group.extended === state.filters.extended)
-    && (state.filters.adaptation === "all" || group.adaptation === state.filters.adaptation)
-    && (!state.filters.label || group.label === state.filters.label)
-    && (!state.filters.task || group.task === state.filters.task)
-    && (!state.filters.group || group.key === state.filters.group);
+    && (state.filters.adaptation === "all" || group.adaptation === state.filters.adaptation);
 }
 
 function rowMatchesFilters(row) {
@@ -311,9 +302,7 @@ function rowMatchesFilters(row) {
   const haystack = [row.model,row.method,row.representation,entry.name,entry.submitter,entry.submission_id].join(" ").toLowerCase();
   return state.filters.families.has(row.model_family)
     && (!state.filters.model || row.model === state.filters.model)
-    && (!state.filters.query || haystack.includes(state.filters.query))
-    && (!state.filters.source || entry.source_type === state.filters.source)
-    && (!state.filters.scope || fieldValue(entry, "scope") === state.filters.scope);
+    && (!state.filters.query || haystack.includes(state.filters.query));
 }
 
 function sortedRows(rows) {
@@ -559,7 +548,7 @@ function togetherResultRow(row, group) {
 
 function updateSortControls() {
   const sortScope =
-    state.view === "grouped" ? "inside each variant" : "across all visible configurations";
+    state.view === "grouped" ? "inside each configuration" : "across all visible configurations";
   elements.sortButtons.forEach((button) => {
     const active = button.dataset.sort === state.sort.key;
     button.dataset.active = String(active);
@@ -621,7 +610,7 @@ function render() {
   elements.copyButton.disabled = visibleRows.length === 0;
 
   const visibleGroups = matchingGroups.length;
-  const groupWord = visibleGroups === 1 ? "variant" : "variants";
+  const groupWord = visibleGroups === 1 ? "configuration" : "configurations";
   const viewLabel = state.view === "grouped" ? "grouped view" : "all-together view";
   elements.resultsSummary.textContent =
     `Showing ${visibleRows.length} of ${state.rows.length} submissions across ${visibleGroups} ${groupWord} · ${viewLabel}`;
@@ -637,9 +626,6 @@ function resetFilters() {
   state.filters.families = new Set(["Encoder", "Decoder"]);
   state.filters.model = "";
   state.filters.query = "";
-  Object.assign(state.filters, {label:"",task:"",source:"",scope:"main",group:""});
-  for (const key of ["label","task","source","group"]) elements[key + "Filter"].value = "";
-  elements.scopeFilter.value = "main";
   state.filters.families.add("Unspecified");
   state.sort =
     state.view === "grouped"
@@ -662,12 +648,6 @@ function resetFilters() {
 }
 
 function bindEvents() {
-  for (const key of ["label","task","source","scope","group"]) {
-    elements[key + "Filter"].addEventListener("change", () => {
-      state.filters[key] = elements[key + "Filter"].value;
-      render();
-    });
-  }
   byId("retry").addEventListener("click", initialize);
   byId("close-details").addEventListener("click", () => byId("submission-dialog").close());
   elements.datasetFilter.addEventListener("change", () => {
@@ -792,30 +772,25 @@ async function initialize() {
     const data = await getJSON("data/leaderboard.json");
     if (!Array.isArray(data.entries) || !data.runs || !data.history || !data.artifact_metadata)
       throw new Error("Incomplete leaderboard data; rebuild this site.");
-    const {rows, groups} = enrichRows(data.entries);
+    // The site build excludes archived paper trait ablations. Also ignore any
+    // left in an older cached data file during deployment.
+    const publishedEntries = data.entries.filter(entry =>
+      !(entry.source_type === "reported" && entry.experiment?.scope === "ablation"));
+    const {rows, groups} = enrichRows(publishedEntries);
     state.data = data;
     state.rows = rows;
     state.groups = groups;
     state.groupByKey = new Map(groups.map(group => [group.key, group]));
     state.filters.families = new Set(["Encoder", "Decoder", "Unspecified"]);
-    const mainCount = rows.filter(row => fieldValue(row.entry, "scope") === "main").length;
-    const ablationCount = rows.filter(row => fieldValue(row.entry, "scope") === "ablation").length;
-    elements.totalConfigurations.textContent = mainCount;
-    elements.footerSummary.textContent = `${mainCount} main submissions · ${ablationCount} trait ablations · ${uniqueValues("dataset").length} datasets · ${uniqueValues("model").length} models`;
+    elements.totalConfigurations.textContent = rows.length;
+    elements.footerSummary.textContent = `${rows.length} submissions · ${uniqueValues("dataset").length} datasets · ${uniqueValues("model").length} models`;
     byId("family-unknown-label").hidden = !rows.some(row => row.model_family === "Unspecified");
     populateSelect(elements.datasetFilter, uniqueValues("dataset"));
     populateSelect(elements.modelFilter, uniqueValues("model"));
-    populateSelect(elements.labelFilter, uniqueValues("label"));
-    populateSelect(elements.taskFilter, uniqueValues("task"));
-    elements.groupFilter.replaceChildren(elements.groupFilter.options[0]);
-    for (const group of groups) {
-      const option = createElement("option", "", [group.dataset,group.label,TASK_LABELS[group.task] || group.task,ADAPTATION_LABELS[group.adaptation] || group.adaptation,group.comparability,group.key.slice(-8)].join(" · "));
-      option.value = group.key;
-      elements.groupFilter.append(option);
-    }
     byId("history").replaceChildren();
     for (const [sid, revisions] of Object.entries(data.history || {})) {
       const last = revisions[revisions.length - 1];
+      if (last.source_type === "reported" && last.experiment?.scope === "ablation") continue;
       const line = node("p", `${last.name} · ${last.source_type} · ${last.status} · ${revisions.length} revision(s) · `);
       line.append(node("span", sid), disclosure("View revisions", revisions));
       byId("history").append(line);

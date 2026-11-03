@@ -1271,11 +1271,7 @@ footer {
 /* Results-repository integration: preserve the final-branch leaderboard design. */
 .skip-link { position:absolute; left:20px; top:-80px; z-index:40; padding:12px 18px; background:var(--surface-strong); color:var(--text); border:2px solid var(--violet); border-radius:8px; }
 .skip-link:focus { top:12px; }
-.advanced-filters { padding:12px 28px; border-bottom:1px solid var(--border); color:var(--text-muted); font-size:.76rem; }
-.advanced-filters summary, .history summary { cursor:pointer; font-weight:650; }
-.advanced-filter-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; padding-top:16px; }
-.advanced-filter--group { grid-column:1 / -1; }
-.advanced-filter-grid select { text-overflow:ellipsis; }
+.history summary { cursor:pointer; font-weight:650; }
 .variant-provenance { color:var(--text-dim); font-size:.62rem; }
 .variant-group-id { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .model-cell { max-width:330px; overflow-wrap:anywhere; }
@@ -1305,6 +1301,5 @@ footer {
 .submission-dialog .run-detail { padding:12px; border:1px solid var(--border); border-radius:10px; }
 button:focus-visible, summary:focus-visible, a:focus-visible, .table-scroll:focus-visible { outline:2px solid var(--violet); outline-offset:3px; border-radius:4px; }
 footer { flex-wrap:wrap; }
-@media(max-width:920px) { .advanced-filter-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:650px) { .advanced-filters { padding-left:17px; padding-right:17px; } .advanced-filter-grid { grid-template-columns:1fr; } .submission-dialog { padding:18px; } }
-@media print { .filters, .advanced-filters, .leaderboard-actions, .results-tools, .history, .topbar, .toast, dialog { display:none; } .table-scroll { max-height:none; overflow:visible; } .shell { width:100%; } }
+@media(max-width:650px) { .submission-dialog { padding:18px; } }
+@media print { .filters, .leaderboard-actions, .results-tools, .history, .topbar, .toast, dialog { display:none; } .table-scroll { max-height:none; overflow:visible; } .shell { width:100%; } }

@@ -180,6 +180,12 @@ def validate_sources(root: Path, contract: Contract, *, metadata_only=False):
 
 
 def leaderboard(runs, histories):
+    # Keep the complete, immutable paper archive in source storage, but do not
+    # publish its trait-ablation entries, revisions, or scores on the website.
+    # Filter before ranking so removed ablations cannot influence remaining ranks.
+    histories = {sid: history for sid, history in histories.items()
+                 if not (history[-1]['source_type'] == 'reported'
+                         and (history[-1].get('experiment') or {}).get('scope') == 'ablation')}
     entries = []
     for sid, history in sorted(histories.items()):
         record = history[-1]

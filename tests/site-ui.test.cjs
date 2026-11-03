@@ -108,7 +108,7 @@ test('DOM rendering: groups, controls, empty results, history and supplied rank'
   assert.match(textOf(dom.get('submission-content')),/Immutable submission revision history/u);
   assert.doesNotMatch(textOf(dom.get('submission-content')),/API/u);
   assert.match(textOf(dom.get('history')),/revision/u);
-  dom.get('source-filter').value='measured';dom.get('source-filter').listeners.change();
+  dom.get('search-filter').value='lab a';dom.get('search-filter').listeners.input();
   assert.equal(dom.get('leaderboard-body').children.filter(el=>el.className==='variant-row').length,1);
   assert.match(textOf(dom.get('leaderboard-body')),/9/u);
   assert.match(dom.get('results-summary').textContent,/1 of 2/u);
@@ -182,19 +182,20 @@ test('grouped and all-together views, segmented filters, reset and CSV copy work
   assert.equal(dom.get('empty-state').hidden,false);
   dom.get('reset-filters').listeners.click();
   assert.equal(dom.get('empty-state').hidden,true);
-  assert.equal(dom.get('scope-filter').value,'main');
   assert.equal(dom.get('together-leaderboard-table').hidden,false);
 });
 
-test('ablation filtering and empty data have explicit states',async()=>{
+test('paper ablations in cached data are not displayed; empty states work',async()=>{
   const main={...entries[1],experiment:{model_family:'encoder',scope:'main'}};
   const ablation={...entries[1],submission_id:'c',experiment:{model_family:'decoder',scope:'ablation',trait_subset:['Gender']}};
   const data={entries:[main,ablation],history:{},build:{build_id:'sha256:build'},
     artifact_metadata:{},runs:{}};
   const dom=await loadView(data);
-  assert.match(dom.get('results-summary').textContent,/1 of 2/u);
-  dom.get('scope-filter').value='ablation';dom.get('scope-filter').listeners.change();
-  assert.match(textOf(dom.get('leaderboard-body')),/Gender/u);
+  assert.match(dom.get('results-summary').textContent,/1 of 1/u);
+  assert.doesNotMatch(textOf(dom.get('leaderboard-body')),/Gender/u);
+  assert.equal(data.entries.length,2);
+  for (const removed of ['label-filter','task-filter','source-filter','scope-filter','group-filter'])
+    assert.equal(dom.has(removed),false);
   const empty=await loadView({...data,entries:[]});
   assert.equal(empty.get('error').hidden,true);
   assert.equal(empty.get('empty-state').hidden,false);
@@ -202,21 +203,27 @@ test('ablation filtering and empty data have explicit states',async()=>{
   assert.equal(empty.get('empty-title').textContent,'No published results yet');
 });
 
-test('headline counts 72 main submissions, not the 212 additional trait ablations',async()=>{
+test('headline and footer count submissions without archived paper trait ablations',async()=>{
   const main=Array.from({length:72},(_,i)=>({...entries[1],submission_id:`main-${i}`,
     experiment:{model_family:'encoder',scope:'main'}}));
   const ablations=Array.from({length:212},(_,i)=>({...entries[1],submission_id:`ablation-${i}`,
     ranking_group_id:'ablation',experiment:{model_family:'decoder',scope:'ablation',trait_subset:['Gender']}}));
-  const data={entries:[...main,...ablations],history:{},artifact_metadata:{},runs:{}};
+  const data={entries:[...main,...ablations],history:{
+    'main-0':[{...main[0],status:'published'}],
+    'ablation-0':[{...ablations[0],name:'Archived trait-ablation entry',status:'published'}],
+  },artifact_metadata:{},runs:{}};
   const dom=await loadView(data);
   assert.equal(dom.get('error').hidden,true);
   assert.equal(String(dom.get('total-configurations').textContent),'72');
-  assert.match(dom.get('footer-summary').textContent,/72 main submissions · 212 trait ablations/u);
-  dom.get('scope-filter').value='ablation';dom.get('scope-filter').listeners.change();
-  assert.match(dom.get('results-summary').textContent,/Showing 212 of 284/u);
-  assert.equal(String(dom.get('total-configurations').textContent),'72');
-  dom.get('scope-filter').value='';dom.get('scope-filter').listeners.change();
-  assert.match(dom.get('results-summary').textContent,/Showing 284 of 284/u);
+  assert.match(dom.get('footer-summary').textContent,/72 submissions/u);
+  assert.doesNotMatch(dom.get('footer-summary').textContent,/main|ablation/iu);
+  assert.doesNotMatch(textOf(dom.get('history')),/Archived trait-ablation entry/u);
+  assert.match(dom.get('results-summary').textContent,/Showing 72 of 72/u);
+  assert.match(dom.get('results-summary').textContent,/configurations?/u);
+  assert.doesNotMatch(dom.get('results-summary').textContent,/variants?/u);
+  assert.equal(data.entries.length,284);
+  dom.get('reset-filters').listeners.click();
+  assert.match(dom.get('results-summary').textContent,/Showing 72 of 72/u);
 });
 
 test('new measured submissions increase the main count; empty and ablation-only sites do not',async()=>{
@@ -227,4 +234,23 @@ test('new measured submissions increase the main count; empty and ablation-only 
     assert.equal(dom.get('error').hidden,true);
     assert.equal(String(dom.get('total-configurations').textContent),String(expected));
   }
+});
+
+test('original dataset, model and family filters still work after removing More filters',async()=>{
+  const measured={...entries[0],configuration:{hyperparameters:{inference:{model_family:'encoder'}}}};
+  const paper={...entries[1],model:'Another model',experiment:{model_family:'decoder'},
+    comparison_group:{...group,dataset:'other'}};
+  const dom=await loadView({entries:[measured,paper],history:{},artifact_metadata:{},runs:{}});
+  dom.get('dataset-filter').value='toy';dom.get('dataset-filter').listeners.change();
+  assert.match(dom.get('results-summary').textContent,/Showing 1 of 2/u);
+  assert.match(textOf(dom.get('leaderboard-body')),/Lab A/u);
+  dom.get('reset-filters').listeners.click();
+  dom.get('model-filter').value='Another model';dom.get('model-filter').listeners.change();
+  assert.match(dom.get('results-summary').textContent,/Showing 1 of 2/u);
+  assert.match(textOf(dom.get('leaderboard-body')),/Another model/u);
+  dom.get('reset-filters').listeners.click();
+  dom.get('family-encoder').checked=false;dom.get('family-encoder').listeners.change();
+  assert.match(dom.get('results-summary').textContent,/Showing 1 of 2/u);
+  dom.get('reset-filters').listeners.click();
+  assert.match(dom.get('results-summary').textContent,/Showing 2 of 2/u);
 });

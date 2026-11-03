@@ -55,6 +55,20 @@ class Conformance(unittest.TestCase):
         self.assertEqual(inventory, (directory / 'SHA256SUMS').read_bytes())
         self.assertEqual(digest(inventory), self.contract.schema_digest)
 
+    def test_paper_trait_ablations_are_archival_not_ranked_or_published_in_history(self):
+        record=read_json((FIXTURES/'valid/reported.json').read_bytes())
+        ablation=copy.deepcopy(record)
+        ablation['submission_id']='sub_bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
+        ablation['experiment']={'scope':'ablation'}
+        ablation['values']['global_f1']=.999  # Must not affect the retained row's rank.
+        histories={record['submission_id']:[record],ablation['submission_id']:[ablation]}
+        original=copy.deepcopy(histories)
+        data=leaderboard({},histories)
+        self.assertEqual([entry['submission_id'] for entry in data['entries']],[record['submission_id']])
+        self.assertEqual(data['entries'][0]['rank'],1)
+        self.assertEqual(set(data['history']),{record['submission_id']})
+        self.assertEqual(histories,original)  # Source archive/revisions are never rewritten.
+
     def test_identity_patterns_reject_trailing_newlines(self):
         _, docs = validate_bundle(BUNDLE, self.contract)
         for field in ['run_id', 'configuration_id']:

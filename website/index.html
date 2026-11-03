@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'">
     <meta
       name="description"
-      content="Interactive PersEval leaderboard for comparing perspective-aware classification models within equivalent benchmark variants."
+      content="Interactive PersEval leaderboard for comparing perspective-aware classification models within equivalent benchmark configurations."
     >
     <title>PersEval Leaderboard</title>
     <link rel="stylesheet" href="styles.css">
@@ -33,9 +33,9 @@
           </p>
         </div>
 
-        <div class="hero-stat" aria-label="Published main submission count, excluding trait ablations">
+        <div class="hero-stat" aria-label="Published submission count">
           <span class="hero-stat__value" id="total-configurations">—</span>
-          <span class="hero-stat__label">main<br>submissions</span>
+          <span class="hero-stat__label">Submissions</span>
         </div>
       </header>
 
@@ -130,17 +130,6 @@
           </button>
         </div>
 
-        <details class="advanced-filters">
-          <summary>More filters</summary>
-          <div class="advanced-filter-grid">
-            <label class="filter-control"><span>Label</span><select id="label-filter"><option value="">All labels</option></select></label>
-            <label class="filter-control"><span>Task</span><select id="task-filter"><option value="">All tasks</option></select></label>
-            <label class="filter-control"><span>Evidence</span><select id="source-filter"><option value="">All evidence</option><option value="reported">Reported paper</option><option value="measured">Measured reproduction</option></select></label>
-            <label class="filter-control"><span>Experiments</span><select id="scope-filter"><option value="main">Main results and reproductions</option><option value="ablation">Paper trait ablations</option><option value="">All experiments</option></select></label>
-            <label class="filter-control advanced-filter--group"><span>Comparison group</span><select id="group-filter"><option value="">All comparison groups</option></select></label>
-          </div>
-        </details>
-
         <div class="results-bar">
           <p id="results-summary" role="status" aria-live="polite">Loading results…</p>
           <div class="results-tools">
@@ -151,11 +140,11 @@
                 <button type="button" data-value="together" aria-pressed="false">All together</button>
               </div>
             </div>
-            <div class="score-legend" aria-label="Score heat map legend: relative within each variant">
+            <div class="score-legend" aria-label="Score heat map legend: relative within each configuration">
               <span>Lower</span>
               <span class="score-legend__gradient" aria-hidden="true"></span>
               <span>Higher</span>
-              <span class="score-legend__context">within each variant</span>
+              <span class="score-legend__context">within each configuration</span>
             </div>
           </div>
         </div>
@@ -214,7 +203,7 @@
             <table id="together-leaderboard-table" class="together-table" hidden>
               <caption class="sr-only">
                 All PersEval configurations in one table. Rank and heat colors retain
-                their meaning within each equivalent benchmark variant.
+                their meaning within each equivalent benchmark configuration.
               </caption>
               <thead>
                 <tr class="column-groups">
@@ -267,12 +256,6 @@
         </div>
 
         <div class="table-notes">
-          <div>
-            <h3>Compare within groups</h3>
-            <p>Ranks and heat colors belong to the complete comparison group. Paper values
-              and measured runs have separate rankings. Scores use the 0–1 scale;
-              unavailable values are shown as a dash.</p>
-          </div>
           <a href="https://aclanthology.org/2025.emnlp-main.1137.pdf#page=1">
             Read the PersEval paper <span aria-hidden="true">↗</span>
           </a>
@@ -281,7 +264,6 @@
 
       <details class="history">
         <summary>Submission revision history</summary>
-        <p>Previous revisions, withdrawn entries, and superseded entries remain available below.</p>
         <div id="history"></div>
       </details>
 

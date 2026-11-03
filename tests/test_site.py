@@ -339,11 +339,19 @@ class SiteTests(unittest.TestCase):
         self.assertNotRegex(js,r'\.(?:rank|ranking_group_id)\s*=(?!=)')
         self.assertNotIn('innerHTML',js)
         self.assertIn('String(entry.rank)',js)
-        for control in ('dataset-filter','label-filter','family-encoder','family-decoder',
-                        'task-filter','adaptation-filter','extended-filter','search-filter',
-                        'source-filter','scope-filter','group-filter','view-mode','copy-results',
+        for control in ('dataset-filter','model-filter','family-encoder','family-decoder',
+                        'adaptation-filter','extended-filter','search-filter',
+                        'view-mode','copy-results',
                         'submission-dialog','retry'):
             self.assertIn(f'id="{control}"',html)
+        self.assertNotIn('More filters',html)
+        self.assertIn('>Submissions</span>',html)
+        self.assertNotIn('main<br>submissions',html)
+        self.assertNotIn('within each variant',html)
+        self.assertIn('within each configuration',html)
+        for removed in ('label-filter','task-filter','source-filter','scope-filter','group-filter'):
+            self.assertNotIn(removed,html)
+            self.assertNotIn(removed,js)
         self.assertIn('role="status"',html);self.assertIn('role="alert"',html)
         self.assertIn('Skip to results',html)
         self.assertNotIn('http://',html)

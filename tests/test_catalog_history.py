@@ -148,7 +148,18 @@ class CatalogTests(unittest.TestCase):
             return real_import(name,*args,**kwargs)
         with patch('builtins.__import__',side_effect=forbid),patch.object(socket,'socket',side_effect=AssertionError('network forbidden')):
             data=build(self.root,self.root/'site-build');validate_preview(self.root,self.root/'site-build')
-        self.assertEqual(len(data['entries']),284);self.assertEqual(data['runs'],{})
+        self.assertEqual(len(data['entries']),72);self.assertEqual(data['runs'],{})
+        self.assertEqual(len(data['history']),72)
+        self.assertTrue(all(entry['experiment']['scope']=='main' for entry in data['entries']))
+        archived_ids={sid for sid,history in self.sources()[1].items()
+                      if history[-1]['experiment']['scope']=='ablation'}
+        self.assertEqual(len(archived_ids),212)
+        self.assertTrue(archived_ids.isdisjoint(data['history']))
+        import csv
+        csv_ids={row['submission_id'] for row in csv.DictReader(
+            (self.root/'site-build/scores.csv').read_text().splitlines())}
+        self.assertEqual(csv_ids,{entry['submission_id'] for entry in data['entries']})
+        self.assertTrue(archived_ids.isdisjoint(csv_ids))
         self.assertTrue(all(entry['comparability']=='documented-paper-variant' for entry in data['entries']))
         self.assertTrue(all(metric['stddev'] is None for entry in data['entries'] for metric in entry['metrics'].values()))
         self.assertEqual(read_json((self.root/'site-build/data/leaderboard.json').read_bytes()),data)
