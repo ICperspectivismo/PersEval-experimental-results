@@ -15,8 +15,8 @@ python -m pip install -e .
 ```
 
 On Windows, replace the activation command with:
-* Command Prompt (CMD): .venv\Scripts\activate.bat
-* PowerShell: .\.venv\Scripts\Activate.ps1
+* Command Prompt (CMD): `.venv\Scripts\activate.bat`
+* PowerShell: `.\.venv\Scripts\Activate.ps1`
 
 Configure your Git author with `git config --local user.name` and
 `git config --local user.email`. Before the first publication, maintainers must
