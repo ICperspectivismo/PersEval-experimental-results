@@ -14,6 +14,10 @@ source .venv/bin/activate
 python -m pip install -e .
 ```
 
+On Windows, replace the activation command with:
+* Command Prompt (CMD): .venv\Scripts\activate.bat
+* PowerShell: .\.venv\Scripts\Activate.ps1
+
 Configure your Git author with `git config --local user.name` and
 `git config --local user.email`. Before the first publication, maintainers must
 review and commit the repository setup and configure its GitHub remote.
