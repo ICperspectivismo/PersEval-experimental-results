@@ -1,3 +1,9 @@
+# Byte-exact checkouts on every OS: Git for Windows converts text files to CRLF by default
+# (core.autocrlf=true), which breaks canonical JSON fixtures, site assets and appended LFS rules.
+/.gitattributes -text
+/fixtures/** -text
+/website/** -text
+
 # Score/provenance metadata must remain readable without downloading LFS objects.
 *.json -filter
 *.py -filter

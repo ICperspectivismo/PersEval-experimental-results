@@ -13,6 +13,7 @@ from pathlib import Path
 from .protocol import (Contract, ProtocolError, canonical_json, canonical_path,
                        checksum_bytes, configuration_id, digest, read_json, timestamp)
 from .lfs import stored_reference
+from .portable import open_read
 
 CORE = {'manifest.json', 'run.json', 'metrics.json', 'predictions.csv', 'environment.json', 'checksums.sha256'}
 MAX_ARCHIVE = 64 * 1024 * 1024
@@ -27,7 +28,7 @@ def read_archive(path: Path) -> dict[str, bytes]:
         raise ProtocolError('bundle input must be a regular file')
     if path.stat().st_size > MAX_ARCHIVE:
         raise ProtocolError('compressed archive exceeds 64 MiB')
-    fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+    fd = open_read(path)
     with os.fdopen(fd, 'rb') as source:
         info = os.fstat(source.fileno())
         if not stat.S_ISREG(info.st_mode):

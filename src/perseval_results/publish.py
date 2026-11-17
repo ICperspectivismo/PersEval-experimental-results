@@ -17,6 +17,7 @@ from .build import build
 from .bundle import validate_bundle
 from .gitops import GitRepository, DurableCommitError, git
 from .lfs import matches as blob_matches
+from .portable import open_fd
 from .protocol import Contract, ProtocolError, canonical_json, digest
 from .records import aggregate, compatible, leaderboard, limitations, validate_sources
 from .storage import (MANAGED, managed_snapshot, tree_files, run_index, revision_path,
@@ -27,7 +28,7 @@ from .storage import (MANAGED, managed_snapshot, tree_files, run_index, revision
 def publisher_lock(root):
     path = root/'.perseval-results.lock'
     try:
-        fd = os.open(path,os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600)
+        fd = open_fd(path,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600,nofollow=True)
     except FileExistsError as exc:
         raise ProtocolError('another publisher is active, or a stale .perseval-results.lock needs inspection') from exc
     try:

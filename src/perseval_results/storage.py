@@ -8,13 +8,14 @@ from pathlib import Path
 from .bundle import MAX_FILE, MAX_TOTAL, validate_files
 from .protocol import Contract, ProtocolError, canonical_json, canonical_path, digest, read_json
 from .lfs import pointer, stored_reference
+from .portable import open_read
 
 MANAGED = ('runs', 'registry')
 
 
 def safe_read(path: Path, limit=MAX_FILE):
     try:
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        fd = open_read(path, nofollow=True)
         with os.fdopen(fd, 'rb') as stream:
             info = os.fstat(stream.fileno())
             if not stat.S_ISREG(info.st_mode) or info.st_size > limit:

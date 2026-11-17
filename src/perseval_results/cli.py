@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from .build import build, validate_preview
@@ -14,6 +15,10 @@ from .historical import HISTORY, audit
 
 
 def main(argv=None):
+        # Windows terminals (e.g. Git Bash) may use a legacy code page; never crash printing non-ASCII names.
+    for stream in (sys.stdout,sys.stderr):
+        try: stream.reconfigure(errors='backslashreplace')
+        except (AttributeError,ValueError): pass
     parser = argparse.ArgumentParser(prog='perseval-results',description='Offline result-bundle publication in a results checkout')
     parser.add_argument('--repo',type=Path,default=Path.cwd(),help='results checkout root (default: current directory)')
     commands = parser.add_subparsers(dest='command',required=True)

@@ -8,6 +8,7 @@ from pathlib import Path, PurePosixPath
 from collections import Counter
 
 from .lfs import pointer
+from .portable import open_read
 from .protocol import Contract, ProtocolError, canonical_json, digest, read_json
 
 HISTORY = 'historical/perseval-97cf3ae'
@@ -87,7 +88,7 @@ def audit(directory, contract, *, metadata_only=False):
         if not stat.S_ISREG(mode) or name not in expected:
             raise ProtocolError(f'unexpected/link/special historical evidence: {name}')
         found.add(name);entry=expected[name]
-        fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+        fd=open_read(path,nofollow=True)
         with os.fdopen(fd,'rb') as stream:
             size=os.fstat(stream.fileno()).st_size
             beginning=stream.read(1024)

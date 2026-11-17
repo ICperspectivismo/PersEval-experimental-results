@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .lfs import eligible, matches, pointer_bytes, LFS_THRESHOLD
+from .portable import open_fd
 from .protocol import ProtocolError
 
 
@@ -239,10 +240,16 @@ class GitRepository:
         self.assert_state(state,files)
         index = self._index();lock = index.with_name(index.name+'.lock')
         try:
-            lock_fd = os.open(lock,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
+            lock_fd = open_fd(lock,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
         except FileExistsError as exc:
             raise ProtocolError('Git index changed concurrently (index.lock exists); retry after reviewing the checkout') from exc
         lock_identity = os.fstat(lock_fd)
+        lock_open = [True]
+        def close_lock():
+            # Windows can neither rename nor delete a file that is still open.
+            if lock_open[0]:
+                lock_open[0] = False
+                os.close(lock_fd)
         def release_lock():
             try: current = lock.lstat()
             except FileNotFoundError: return
@@ -286,6 +293,7 @@ class GitRepository:
                 if self.index_bytes()==state.index:
                     with os.fdopen(os.dup(lock_fd),'wb') as stream:
                         stream.write(private.read_bytes());stream.flush();os.fsync(stream.fileno())
+                    close_lock()
                     os.replace(lock,index)
                 else:
                     warnings.append('Real Git index changed despite index.lock; left user staging untouched. Inspect git status before pushing.')
@@ -311,7 +319,7 @@ class GitRepository:
             raise
         finally:
             failures = []
-            for cleanup in (release_lock,lambda:os.close(lock_fd),
+            for cleanup in (close_lock,release_lock,
                             lambda:private.unlink(missing_ok=True) if private else None,
                             lambda:private.with_name(private.name+'.lock').unlink(missing_ok=True) if private else None):
                 try: cleanup()
